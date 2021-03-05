@@ -22,6 +22,47 @@ import (
 var matchIPXEScript = regexp.MustCompile(`(?i)^#![i]?pxe`)
 var ipAddressTypes = []string{"public_ipv4", "private_ipv4", "public_ipv6"}
 
+func resourceMetalDevicePort() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"network_type": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"mac": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+
+			"bonded": {
+				Type:     schema.TypeBool,
+			},
+
+			"layer2": {
+				Type: schema.TypeBool,
+			},
+		
+			"virtual_networks": {
+				Type: schema.TypeSet,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
+
+			"native_virtual_network": {
+				Type: schema.TypeString,
+			},
+
+			"ip_address": {
+				Type: schema.TypeSet,
+				Elem: ipAddressSchema(),
+			},
+		},
+	},
+}
+
 func resourceMetalDevice() *schema.Resource {
 	return &schema.Resource{
 		Timeouts: &schema.ResourceTimeout{
@@ -162,6 +203,58 @@ func resourceMetalDevice() *schema.Resource {
 						"bonded": {
 							Type:     schema.TypeBool,
 							Computed: true,
+						},
+					},
+				},
+			},
+
+			"network_ports": {
+				Type:     schema.TypeList,
+				Computed: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"bond0": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Computed: true,
+							Optional: true,
+							Elem:     resourceMetalDevicePort(),
+						},
+						"bond1": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Computed: true,
+							Optional: true,
+							Elem:     resourceMetalDevicePort(),
+						},
+						"eth0": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Computed: true,
+							Optional: true,
+							Elem:     resourceMetalDevicePort(),
+						},
+						"eth1": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Computed: true,
+							Optional: true,
+							Elem:     resourceMetalDevicePort(),
+						},
+						"eth2": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Computed: true,
+							Optional: true,
+							Elem:     resourceMetalDevicePort(),
+						},
+						"eth3": {
+							Type:     schema.TypeList,
+							MaxItems: 1,
+							Computed: true,
+							Optional: true,
+							Elem:     resourceMetalDevicePort(),
 						},
 					},
 				},

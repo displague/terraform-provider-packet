@@ -247,3 +247,38 @@ func ipAddressSchema() *schema.Resource {
 		},
 	}
 }
+
+func ipAddressSchema() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"type": {
+				Type:         schema.TypeString,
+				Required:     true,
+				ValidateFunc: validation.StringInSlice(ipAddressTypes, false),
+				Description:  fmt.Sprintf("one of %s", strings.Join(ipAddressTypes, ",")),
+			},
+			"cidr": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Description: "CIDR suffix for IP block assigned to this device",
+			},
+			"reservation_ids": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "IDs of reservations to pick the blocks from",
+				MinItems:    1,
+				Elem: &schema.Schema{
+					Type:         schema.TypeString,
+					ValidateFunc: validation.StringMatch(uuidRE, "must be a valid UUID"),
+				},
+			},
+		},
+	}
+}
+
+func ipAddressSchemaWithCIDRNotation() *schema.Resource {
+	resource := ipAddressSchema()
+	resource.Schema["cidr_notation"] = &schema.Schema{
+
+	},
+}
